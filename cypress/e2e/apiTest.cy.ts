@@ -1,49 +1,20 @@
 import user from "../fixtures/user.json";
+import { env, requestsURL } from "../support/API-Commands/apiData";
 
-describe("API tests", function () {
-  let bearerToken: string;
-  it("login to the app and save bearer token to the varriable", function () {
-    cy.api({
-      method: "POST",
-      url: "https://demoqa.com/Account/v1/GenerateToken",
-      body: {
-        userName: user.username,
-        password: user.password,
-      },
-    }).then((response) => {
-      bearerToken = response.body.token;
-      expect(response.status).to.eq(200);
-      expect(bearerToken).to.be.a("string");
-      expect(response.body.result).to.eq("User authorized successfully.");
-    });
+describe("API tests", () => {
+  before("Generate token and validate its response", () => {
+    cy.generateAuthToken(env + requestsURL.token, user.username, user.password);
   });
 
-  it("check varriable in other it", () => {
-    cy.log(bearerToken);
+  it("Get all books", () => {
+    cy.GETrequest200(env + requestsURL.getBooks);
   });
 
-  it("Check If user is Authorized", function () {
-    cy.api({
-      method: "POST",
-      url: "https://demoqa.com/Account/v1/Authorized",
-      body: {
-        userName: user.username,
-        password: user.password,
-      },
-    }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body).to.eq(true);
-    });
+  it("Login to the bookstore", () => {
+    cy.POSTlogin200(env + requestsURL.login, user.username, user.password);
   });
-  it("uuid", function () {
-    cy.api({
-      method: "GET",
-      url: "https://demoqa.com/Account/v1/User/" + user.uuid,
-      headers: {
-        Authorization: "Bearer " + bearerToken,
-      },
-    }).then((response) => {
-      expect(response.status).to.eq(200);
-    });
+
+  it("verify user uuid", () => {
+    cy.GETuserUUID200(env + requestsURL.user + user.uuid);
   });
 });
