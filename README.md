@@ -5,11 +5,15 @@
 ```ruby
 git clone https://github.com/Aszton/API-Cypress-Typescript
 ```
-3. In the terminal go to the folder with project and install all dev dependencies:
+3. In the terminal go to the folder with project and install all dependencies:
 ```ruby
 npm install
 ```
 4. Run Cypress by this command:
 ```ruby
 npx cypress open
+```
+5. Run PactumJS api tests:
+```ruby
+npm run pactum
 ```
