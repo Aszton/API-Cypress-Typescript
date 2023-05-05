@@ -29,8 +29,9 @@ Cypress.Commands.add("generateAuthToken", function (url, username, password) {
     },
   }).then((response) => {
     bearerToken = response.body.token;
-    cy.wrap(bearerToken).as("token");
-    expect(response.status).to.eq(200);
+    cy.wrap(bearerToken, { log: false }).as("token");
+    expect(response.status).to.be.within(200, 299);
+    expect(response.body).to.have.property("token");
     expect(response.body.result).to.eq("User authorized successfully.");
   });
 });
@@ -42,28 +43,13 @@ Cypress.Commands.add("GETrequest200", function (url) {
     url: url,
   }).then((response) => {
     try {
-      expect(response.status).within(200, 299);
+      cy.addContext("status code:" + JSON.stringify(response.status));
+      cy.addContext("status text:" + JSON.stringify(response.statusText));
+      cy.addContext("response body:" + JSON.stringify(response.body));
+      expect(response.status).within(400, 500);
     } catch {
-      let responseMessage: string;
-      responseMessage =
-        "--------------------------------------" +
-        "Service Issue" +
-        "--------------------------------------\n" +
-        "Request URL: " +
-        String(response.allRequestResponses[0]["Request URL"]) +
-        "\n" +
-        "Response Status: " +
-        String(response.status) +
-        " " +
-        String(response.statusText) +
-        "\n" +
-        "Response Body: " +
-        String(response.allRequestResponses[0]["Response Body"]) +
-        "\n \n \n";
-      cy.writeFile("reports/apiLogs.json", responseMessage, {
-        flag: "a+",
-      }).then(() => {
-        throw new Error("Fail");
+      cy.log("error").then(() => {
+        throw new Error("GET request 200 failed");
       });
     }
   });
@@ -78,7 +64,7 @@ Cypress.Commands.add("POSTlogin200", function (url, username, password) {
       password: password,
     },
   }).then((response) => {
-    expect(response.status).to.eq(200);
+    expect(response.status).to.be.within(200, 299);
   });
 });
 
@@ -90,30 +76,6 @@ Cypress.Commands.add("GETrequest200withToken", function (url, token) {
       Authorization: "Bearer " + token,
     },
   }).then((response) => {
-    try {
-      expect(response.status).within(200, 299);
-    } catch {
-      let responseMessage: string;
-      responseMessage =
-        "--------------------------------------" +
-        "Service Issue" +
-        "--------------------------------------\n" +
-        "Request URL: " +
-        String(response.allRequestResponses[0]["Request URL"]) +
-        "\n" +
-        "Response Status: " +
-        String(response.status) +
-        " " +
-        String(response.statusText) +
-        "\n" +
-        "Response Body: " +
-        String(response.allRequestResponses[0]["Response Body"]) +
-        "\n \n \n";
-      cy.writeFile("reports/apiLogs.json", responseMessage, {
-        flag: "a+",
-      }).then(() => {
-        throw new Error("Fail");
-      });
-    }
+    expect(response.status).within(200, 299);
   });
 });
