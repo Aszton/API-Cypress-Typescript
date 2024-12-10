@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Aszton/API-Cypress-Typescript#readme",
   "devDependencies": {
     "@types/mochawesome": "^6.2.1",
-    "cypress": "^12.11.0",
+    "cypress": "^13.16.1",
     "cypress-mochawesome-reporter": "^3.4.0",
     "mocha": "^10.2.0",
     "pactum": "^3.3.3",
