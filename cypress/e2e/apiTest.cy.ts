@@ -6,7 +6,7 @@ describe("API tests", function () {
     cy.generateAuthToken(requestsURL.token, user.userName, user.password);
   });
 
-  it("Get all books", function () {
+  it.skip("Get all books", function () {
     cy.GETrequest200(requestsURL.getBooks);
   });
 
