@@ -13,7 +13,3 @@ npm install
 ```ruby
 npx cypress open
 ```
-5. Run PactumJS api tests:
-```ruby
-npm run pactum
-```
